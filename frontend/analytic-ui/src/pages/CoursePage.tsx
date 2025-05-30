@@ -1,42 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-
-import aiImg from "../assets/ai-ml.png";
-import webDevImg from "../assets/web-dev.png";
-import cyberSecImg from "../assets/cybersecurity.png";
+import { Course, courses } from "../data/courses"; // centralized data
 import courseBg from '../assets/course-bg.png';
+import { emitAnalyticsEvent } from "../utils/emitEvent";
 
-type Course = {
-    id: string;
-    title: string;
-    description: string;
-    image: string;
-};
-
-const courses: Course[] = [
-    {
-        id: "ai-ml",
-        title: "Artificial Intelligence & Machine Learning",
-        description:
-            "Master AI fundamentals, machine learning models, and neural networks with hands-on projects.",
-        image: aiImg,
-    },
-    {
-        id: "web-dev",
-        title: "Full Stack Web Development",
-        description:
-            "Learn modern web development with React, Node.js, databases, and deployment strategies.",
-        image: webDevImg,
-    },
-    {
-        id: "cybersecurity",
-        title: "Cybersecurity Essentials",
-        description:
-            "Understand cybersecurity principles, threats, and best practices to secure applications and networks.",
-        image: cyberSecImg,
-    },
-];
 
 // Typing effect hook for heading
 function useTypingEffect(text: string, speed = 75) {
@@ -58,12 +26,21 @@ const CoursePage: React.FC = () => {
     const heading = "Master Artificial Intelligence: From Basics to Advanced";
     const typedHeading = useTypingEffect(heading, 50);
 
-    const handleEnroll = (courseId: string) => {
+    const handleEnroll = (course: Course) => {
         // Here you can trigger analytics event for click tracking
         // e.g., analytics.track("Enroll Click", { courseId });
+        emitAnalyticsEvent({
+            eventType: "COURSE_ENROLL_CLICK",
+            userId: "user-123", // Replace with session/user ID if available
+            course: {
+                id: course.id,
+                title: course.title,
+                description: course.description,
+            },
+        });
 
         // Redirect to Payment Page with courseId as param or state
-        navigate("/payment", { state: { courseId } });
+        navigate("/payment", { state: { courseId: course.id } });
     };
 
     return (
@@ -80,30 +57,31 @@ const CoursePage: React.FC = () => {
                 </h1>
 
                 <p className="max-w-3xl mx-auto text-lg sm:text-xl text-gray-300 font-light drop-shadow-md mb-16">
-                    Dive deep into AI concepts like Machine Learning, Neural Networks, and Deep Learning. Hands-on projects and real-world case studies included!
+                    Dive deep into AI concepts like Machine Learning, Neural Networks, and Deep Learning. Hands-on
+                    projects and real-world case studies included!
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {courses.map(({ id, title, description, image }) => (
+                    {courses.map((course) => (
                         <motion.div
-                            key={id}
-                            whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(0,0,0,0.5)" }}
+                            key={course.id}
+                            whileHover={{scale: 1.05, boxShadow: "0 10px 20px rgba(0,0,0,0.5)"}}
                             className="bg-white bg-opacity-10 rounded-xl p-6 flex flex-col justify-between backdrop-blur-md border border-white border-opacity-20"
                         >
                             <img
-                                src={image}
-                                alt={title}
+                                src={course.image}
+                                alt={course.title}
                                 className="rounded-md mb-5 object-cover h-40 w-full"
                                 loading="lazy"
                             />
                             <div>
-                                <h2 className="text-2xl font-semibold mb-3">{title}</h2>
-                                <p className="text-gray-300 mb-6">{description}</p>
+                                <h2 className="text-2xl font-semibold mb-3">{course.title}</h2>
+                                <p className="text-gray-300 mb-6">{course.description}</p>
                             </div>
                             <button
-                                onClick={() => handleEnroll(id)}
+                                onClick={() => handleEnroll(course)} // ✅ Send specific course
                                 className="mt-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg px-6 py-3 transition shadow-lg"
-                                aria-label={`Enroll in ${title}`}
+                                aria-label={`Enroll in ${course.title}`}
                             >
                                 Enroll Now
                             </button>

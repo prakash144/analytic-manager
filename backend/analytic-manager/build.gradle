@@ -42,6 +42,8 @@ dependencies {
 
 	// Prometheus Client
 	implementation 'io.prometheus:simpleclient:0.16.0'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 
 	// Google Guava
 	implementation 'com.google.guava:guava:33.1.0-jre' // Latest as of May 2025

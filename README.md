@@ -114,6 +114,67 @@ Grafana dashboards are auto-configured to display:
 
 ---
 
+## 🌟 Quick Run in Local
+
+### 1. SSH into the Ubuntu VM from macOS
+
+```bash
+ssh prakash@198.168.26.227
+```
+
+---
+
+### 2. Start Zookeeper and Kafka (as `kafka` user)
+
+```bash
+su -l kafka
+
+# From kafka directory:
+bin/kafka-server-start.sh config/server.properties
+sudo bin/zookeeper-server-start.sh config/zookeeper.properties
+```
+
+---
+
+### 3. Run Spring Boot Application
+
+Run the [analytic-manager](https://github.com/prakash144/analytic-manager) Spring Boot app locally or in the VM.
+
+---
+
+### 4. Start Prometheus and Grafana Services (on VM)
+
+```bash
+sudo systemctl start prometheus
+sudo systemctl start grafana-server
+```
+
+---
+
+### 5. Port Forwarding: Access Prometheus and Grafana from Mac Browser
+
+From your **Mac terminal**, run:
+
+```bash
+# Prometheus
+ssh -L 9090:localhost:9090 prakash@192.168.29.226
+
+# Grafana
+ssh -L 3000:localhost:3000 prakash@192.168.29.226
+```
+
+Then open in browser:
+
+* [http://localhost:9090](http://localhost:9090) → Prometheus
+* [http://localhost:3000](http://localhost:3000) → Grafana
+
+---
+![grafana.png](grafana.png)
+![UI-Sample-1.png](UI-Sample-1.png)
+![UI-Sample-2.png](UI-Sample-2.png)
+![UI-Sample-3.png](UI-Sample-3.png)
+---
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please open issues or submit PRs.
